@@ -27,7 +27,7 @@ namespace SimpleOtisAPI.Domain.Services
         {
             var cacheKey = $"UserPreference - {userPreference.User_Id}";
 
-            if (_cache.TryGetValue(cacheKey, out List<tblPreference> userPreferences))
+            if (!_cache.TryGetValue(cacheKey, out List<tblPreference>? userPreferences))
             {
                 userPreferences = await _context.tblPreferences.FromSql($"EXEC usp_GetUserPreferences {userPreference.User_Id}").ToListAsync();
 

@@ -27,7 +27,7 @@ namespace SimpleOtisAPI.Domain.Services
             NavigationData navigationData = new();
 
             var cacheKey = $"DynamicMenu - {dynamic.Country_Code}";
-            if (_cache.TryGetValue(cacheKey, out List<DynamicMenuModel>? dynamicMenuData))
+            if (!_cache.TryGetValue(cacheKey, out List<DynamicMenuModel>? dynamicMenuData))
             {
 
                 dynamicMenuData = await _context.tblDynamicMenus.FromSql($"EXEC usp_GetDynamicMenu {dynamic.Country_Code}, {dynamic.Language_Code}").ToListAsync();
