@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using SimpleOtisAPI.Domain.Interfaces;
@@ -34,6 +35,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddControllers(options =>
 {
+    options.OutputFormatters.RemoveType<StringOutputFormatter>();
     options.ReturnHttpNotAcceptable = true;
     options.FormatterMappings.SetMediaTypeMappingForFormat("txt", "text/plain");
 }).AddJsonOptions(options =>
@@ -55,7 +57,12 @@ builder.Services.AddScoped<IDynamicMenu, DynamicMenu>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 //For In-Memory Cache 
 builder.Services.AddMemoryCache();
-
+//For Distributed Cache
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration["RedisCacheOptions:Configuration"];
+    options.InstanceName = builder.Configuration["RedisCacheOptions:InstanceName"];
+});
 var app = builder.Build();
 
 app.UseRouting();
