@@ -54,6 +54,7 @@ builder.Services.AddScoped<IWidgetData, WidgetData>();
 builder.Services.AddScoped<ILogicalPrograms, LogicalPrograms>();
 builder.Services.AddScoped<IUserPreference, UserPreferenceData>();
 builder.Services.AddScoped<IDynamicMenu, DynamicMenu>();
+builder.Services.AddScoped<IRegister_Login, Register_Login>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 //For In-Memory Cache 
 builder.Services.AddMemoryCache();

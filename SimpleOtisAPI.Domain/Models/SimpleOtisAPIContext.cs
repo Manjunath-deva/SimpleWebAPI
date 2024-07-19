@@ -2,6 +2,7 @@
 #nullable disable
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using SimpleOtisAPI.Domain.DTOs;
 namespace SimpleOtisAPI.Domain.Models;
 
 public partial class SimpleOtisAPIContext : DbContext
@@ -26,6 +27,8 @@ public partial class SimpleOtisAPIContext : DbContext
 
     public virtual DbSet<DynamicMenuModel> tblDynamicMenus { get; set; }
 
+    public virtual DbSet<Register_LoginDBDTO> tblUsers { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
 
@@ -33,6 +36,10 @@ public partial class SimpleOtisAPIContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Register_LoginDBDTO>(entity =>
+        {
+            entity.HasKey(e => e.ID);
+        });
         modelBuilder.Entity<LanguageList>(entity =>
         {
             entity.HasNoKey();
