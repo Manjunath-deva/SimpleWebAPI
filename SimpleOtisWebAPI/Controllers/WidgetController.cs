@@ -5,9 +5,11 @@ using AutoMapper;
 using SimpleOtisAPI.Domain.Interfaces;
 using SimpleOtisAPI.Domain.DTOs;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SimpleOtisWebAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class WidgetController : ControllerBase

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SimpleOtisAPI.Domain.DTOs;
@@ -8,6 +9,7 @@ using SimpleOtisWebAPI.Models;
 
 namespace SimpleOtisWebAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DynamicMenuController : ControllerBase
