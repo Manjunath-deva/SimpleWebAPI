@@ -1,3 +1,5 @@
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +38,30 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+//connect Key Vault thru Managed Identity
+var keyVaultEndpoint = new Uri(builder.Configuration.GetConnectionString("KeyVaultUrl"));
+var secretClient = new SecretClient(keyVaultEndpoint, new DefaultAzureCredential());
+builder.Services.AddSingleton(secretClient);
+
+//connect App configuration thru Managed Identity
+var url = builder.Configuration.GetConnectionString("AzureAppConfigUrl");
+var token = new DefaultAzureCredential(new DefaultAzureCredentialOptions() { 
+            VisualStudioTenantId = "cc032e40-e595-4675-a668-0da63c26c269"
+        });
+
+
+//configure Azure App Configuration in Local
+builder.Configuration.AddAzureAppConfiguration(options =>
+{
+    options.Connect(new Uri(url), token);
+    options.ConfigureRefresh(refresh =>
+    {
+        refresh.Register("RefreshValue", refreshAll: true);
+    });
+});
+
+builder.Services.AddAzureAppConfiguration();
+
 //JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
@@ -68,7 +94,7 @@ builder.Services.AddControllers(options =>
 //Configure DbConext With SQL Server ConnectionString
 builder.Services.AddDbContext<SimpleOtisAPIContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServer"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServer"));//GetValue<string>("ConnectionStrings:SQLServer"));
 });
 
 builder.Services.AddScoped<SimpleOtisAPIContext, SimpleOtisAPIContext>();
@@ -93,6 +119,7 @@ var app = builder.Build();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseAzureAppConfiguration();
 app.MapControllers();
 app.MapControllerRoute(
     name: "default",
